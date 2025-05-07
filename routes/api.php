@@ -23,6 +23,7 @@ Route::get('/profile', [AuthController::class, 'profile'])->middleware('auth:api
 // Password reset routes
 Route::post('/password/email', [AuthController::class, 'sendPasswordResetLink']);
 Route::post('/password/reset', [AuthController::class, 'resetPassword']);
+Route::post('/check-username',[AuthController::class,'checkUserName']);
 
 // Email verification routes
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])

@@ -278,4 +278,32 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Verification link sent']);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/check-username",
+     *     summary="Check if a username is available",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"username"},
+     *             @OA\Property(property="username", type="string", example="johndoe")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Username is available"),
+     *     @OA\Response(response=409, description="Username already exists")
+     * )
+     */
+
+    public function checkUserName(Request $request)
+    {
+        $user = User::where('name', $request->username)->first();
+
+        if ($user) {
+            return response()->json(['error' => 'Username already exists'], 409);
+        }
+
+        return response()->json(['success' => 'Username is available'], 200);
+    }
 }

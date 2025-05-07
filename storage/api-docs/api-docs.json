@@ -298,6 +298,42 @@
                     }
                 ]
             }
+        },
+        "/check-username": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Check if a username is available",
+                "operationId": "4ad2ff49d03d2014cb16c47644df9eb1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "username"
+                                ],
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "example": "johndoe"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Username is available"
+                    },
+                    "409": {
+                        "description": "Username already exists"
+                    }
+                }
+            }
         }
     },
     "components": {
