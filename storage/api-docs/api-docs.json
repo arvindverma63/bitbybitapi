@@ -18,6 +18,9 @@
     "paths": {
         "/register": {
             "post": {
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Register a new user",
                 "operationId": "0903f2e0df1a8857bee538fc055417f0",
                 "requestBody": {
@@ -66,6 +69,9 @@
         },
         "/login": {
             "post": {
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "User login",
                 "operationId": "2dd578ff7aba2721293dac66833b27d1",
                 "requestBody": {
@@ -104,6 +110,9 @@
         },
         "/profile": {
             "get": {
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "Get user profile",
                 "operationId": "e92c58f994e8be6e19813ce20425f83e",
                 "responses": {
@@ -123,6 +132,9 @@
         },
         "/logout": {
             "post": {
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "User logout",
                 "operationId": "68a6108af04af5e3bc1ea68a6c6f1299",
                 "responses": {
@@ -150,6 +162,12 @@
             }
         }
     },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        }
+    ],
     "security": [
         {
             "api_key": {

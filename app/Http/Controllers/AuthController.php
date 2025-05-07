@@ -33,6 +33,7 @@ class AuthController extends Controller
     /**
      * @OA\Post(
      *     path="/register",
+     *     tags={"Authentication"},
      *     summary="Register a new user",
      *     @OA\RequestBody(
      *         required=true,
@@ -69,6 +70,7 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/login",
      *     summary="User login",
+     *      tags={"Authentication"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -95,6 +97,7 @@ class AuthController extends Controller
     /**
      * @OA\Get(
      *     path="/profile",
+     *     tags={"Authentication"},
      *     summary="Get user profile",
      *     security={{"api_key":{}}},
      *     @OA\Response(response=200, description="User profile returned successfully"),
@@ -109,6 +112,7 @@ class AuthController extends Controller
     /**
      * @OA\Post(
      *     path="/logout",
+     *     tags={"Authentication"},
      *     summary="User logout",
      *     security={{"api_key":{}}},
      *     @OA\Response(response=200, description="Successfully logged out"),
