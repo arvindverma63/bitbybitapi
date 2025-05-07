@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\URL;
 
 /**
  * @OA\Info(
@@ -30,6 +36,11 @@ use Tymon\JWTAuth\Facades\JWTAuth;
  */
 class AuthController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api')->only(['profile', 'logout', 'resendVerification']);
+    }
+
     /**
      * @OA\Post(
      *     path="/register",
@@ -63,14 +74,16 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json(['message' => 'User registered successfully'], 201);
+        $user->sendEmailVerificationNotification();
+
+        return response()->json(['message' => 'User registered successfully. Please verify your email.'], 201);
     }
 
     /**
      * @OA\Post(
      *     path="/login",
      *     summary="User login",
-     *      tags={"Authentication"},
+     *     tags={"Authentication"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -80,12 +93,18 @@ class AuthController extends Controller
      *         )
      *     ),
      *     @OA\Response(response=200, description="Token generated successfully"),
-     *     @OA\Response(response=401, description="Invalid credentials")
+     *     @OA\Response(response=401, description="Invalid credentials or unverified email")
      * )
      */
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !$user->hasVerifiedEmail()) {
+            return response()->json(['error' => 'Email not verified'], 401);
+        }
 
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'Invalid credentials'], 401);
@@ -123,5 +142,140 @@ class AuthController extends Controller
     {
         auth()->logout();
         return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/password/email",
+     *     tags={"Authentication"},
+     *     summary="Send password reset link",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email"},
+     *             @OA\Property(property="email", type="string", example="john@example.com")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Password reset link sent"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     */
+    public function sendPasswordResetLink(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json(['message' => __($status)], 200)
+            : response()->json(['error' => __($status)], 422);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/password/reset",
+     *     tags={"Authentication"},
+     *     summary="Reset password",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password","password_confirmation","token"},
+     *             @OA\Property(property="email", type="string", example="john@example.com"),
+     *             @OA\Property(property="password", type="string", example="newpassword123"),
+     *             @OA\Property(property="password_confirmation", type="string", example="newpassword123"),
+     *             @OA\Property(property="token", type="string", example="reset-token")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Password reset successfully"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+            ? response()->json(['message' => __($status)], 200)
+            : response()->json(['error' => __($status)], 422);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/email/verify/{id}/{hash}",
+     *     tags={"Authentication"},
+     *     summary="Verify email address",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="hash",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response=200, description="Email verified successfully"),
+     *     @OA\Response(response=400, description="Invalid verification link")
+     * )
+     */
+    public function verifyEmail(Request $request, $id, $hash)
+    {
+        $user = User::findOrFail($id);
+
+        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+            return response()->json(['error' => 'Invalid verification link'], 400);
+        }
+
+        if (!$user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+            event(new Verified($user));
+        }
+
+        return response()->json(['message' => 'Email verified successfully']);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/email/verification-notification",
+     *     tags={"Authentication"},
+     *     summary="Resend email verification",
+     *     security={{"api_key":{}}},
+     *     @OA\Response(response=200, description="Verification link sent"),
+     *     @OA\Response(response=400, description="Email already verified"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
+    public function resendVerification(Request $request)
+    {
+        $user = auth()->user();
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['error' => 'Email already verified'], 400);
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return response()->json(['message' => 'Verification link sent']);
     }
 }

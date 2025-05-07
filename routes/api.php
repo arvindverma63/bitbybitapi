@@ -19,3 +19,13 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/profile', [AuthController::class, 'profile'])->middleware('auth:api');
+
+// Password reset routes
+Route::post('/password/email', [AuthController::class, 'sendPasswordResetLink']);
+Route::post('/password/reset', [AuthController::class, 'resetPassword']);
+
+// Email verification routes
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+    ->name('verification.verify');
+Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])
+    ->middleware('auth:api');
