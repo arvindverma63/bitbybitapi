@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Password;
@@ -73,6 +74,13 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        if($user){
+            UserProfile::create([
+                'firstName'=>$request->name,
+                'userId'=> $user->id,
+            ]);
+        }
 
         $user->sendEmailVerificationNotification();
 

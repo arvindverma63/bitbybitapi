@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,3 +31,7 @@ Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
     ->name('verification.verify');
 Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])
     ->middleware('auth:api');
+
+Route::middleware(['auth:api'])->group(function () {
+    Route::post('/update-profile', [ProfileController::class, 'updateProfile']);
+});

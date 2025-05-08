@@ -334,6 +334,142 @@
                     }
                 }
             }
+        },
+        "/update-profile": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Update user profile",
+                "description": "Updates the user profile including nullable fields and image uploads",
+                "operationId": "updateProfile",
+                "requestBody": {
+                    "description": "User profile data and optional file uploads",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "firstName": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "lastName": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "about": {
+                                        "type": "string",
+                                        "example": "I am a software developer."
+                                    },
+                                    "lastseen": {
+                                        "type": "string",
+                                        "example": "2025-05-08 12:34:56"
+                                    },
+                                    "avatar": {
+                                        "description": "Profile avatar image (jpg, jpeg, png, gif, max 2MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "banners": {
+                                        "description": "Profile banner image (jpg, jpeg, png, gif, max 2MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile updated successfully."
+                                        },
+                                        "profile": {
+                                            "properties": {
+                                                "userId": {
+                                                    "type": "integer"
+                                                },
+                                                "firstName": {
+                                                    "type": "string"
+                                                },
+                                                "lastName": {
+                                                    "type": "string"
+                                                },
+                                                "about": {
+                                                    "type": "string"
+                                                },
+                                                "lastseen": {
+                                                    "type": "string"
+                                                },
+                                                "avatar": {
+                                                    "type": "stocking",
+                                                    "example": "https://i.ibb.co/w04Prt6/c1f64245afb2.gif"
+                                                },
+                                                "banners": {
+                                                    "type": "string",
+                                                    "example": "https://i.ibb.co/98W13PY/c1f64245afb2.gif"
+                                                },
+                                                "created_at": {
+                                                    "type": "string"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred while updating the profile."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -349,6 +485,10 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Profile",
+            "description": "Profile"
         }
     ],
     "security": [
