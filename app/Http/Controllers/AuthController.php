@@ -309,9 +309,9 @@ class AuthController extends Controller
         $user = User::where('name', $request->username)->first();
 
         if ($user) {
-            return response()->json(['error' => 'Username already exists'], 409);
+            return response()->json(['error' => 'Username already exists','status'=>409]);
         }
 
-        return response()->json(['success' => 'Username is available'], 200);
+        return response()->json(['success' => 'Username is available','status' => 200]);
     }
 }
