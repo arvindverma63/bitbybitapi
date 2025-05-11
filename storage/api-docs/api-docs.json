@@ -335,6 +335,42 @@
                 }
             }
         },
+        "/check-email": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Check if a username is available",
+                "operationId": "dfe205f5a6d37c901358f60ed994f79d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "johndoe@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "email is available"
+                    },
+                    "409": {
+                        "description": "email already exists"
+                    }
+                }
+            }
+        },
         "/update-profile": {
             "post": {
                 "tags": [

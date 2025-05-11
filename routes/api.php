@@ -25,6 +25,7 @@ Route::get('/profile', [AuthController::class, 'profile'])->middleware('auth:api
 Route::post('/password/email', [AuthController::class, 'sendPasswordResetLink']);
 Route::post('/password/reset', [AuthController::class, 'resetPassword']);
 Route::post('/check-username',[AuthController::class,'checkUserName']);
+Route::post('/check-email',[AuthController::class,'checkEmail']);
 
 // Email verification routes
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])

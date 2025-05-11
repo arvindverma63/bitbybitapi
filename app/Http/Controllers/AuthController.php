@@ -314,4 +314,29 @@ class AuthController extends Controller
 
         return response()->json(['success' => 'Username is available','status' => 200]);
     }
+
+     /**
+     * @OA\Post(
+     *     path="/check-email",
+     *     summary="Check if a username is available",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email"},
+     *             @OA\Property(property="email", type="string", example="johndoe@example.com")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="email is available"),
+     *     @OA\Response(response=409, description="email already exists")
+     * )
+     */
+    public function checkEmail(Request $request){
+        $user = User::where('email',$request->email)->first();
+
+        if($user){
+            return response()->json(['error'=>'Email already exists','status'=>409]);
+        }
+        return response()->json(['success'=>'Email is available','status'=>200]);
+    }
 }
