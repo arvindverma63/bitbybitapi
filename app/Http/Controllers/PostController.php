@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
  *     @OA\Property(property="userId", type="integer", example=1),
  *     @OA\Property(property="post", type="string", example="Post content"),
  *     @OA\Property(property="tags", type="string", example="tag1,tag2", nullable=true),
- *     @OA\Property(property="category", type="string", example="Technology"),
+ *     @OA\Property(property="category_id", type="integer", example=1),
  *     @OA\Property(property="title", type="string", example="Post Title"),
  *     @OA\Property(property="notification", type="integer", example=0),
  *     @OA\Property(property="created_at", type="string", format="date-time"),
@@ -53,11 +53,11 @@ class PostController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"userId","post","category","title"},
+     *             required={"userId","post","category_id","title"},
      *             @OA\Property(property="userId", type="integer", example=1),
      *             @OA\Property(property="post", type="string", example="Post content"),
      *             @OA\Property(property="tags", type="string", example="tag1,tag2", nullable=true),
-     *             @OA\Property(property="category", type="string", example="Technology"),
+     *             @OA\Property(property="category_id", type="integer", example=1),
      *             @OA\Property(property="title", type="string", example="Post Title"),
      *             @OA\Property(property="notification", type="integer", example=0)
      *         )
@@ -79,7 +79,7 @@ class PostController extends Controller
             'userId' => 'required|integer',
             'post' => 'required|string',
             'tags' => 'nullable|string',
-            'category' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
             'title' => 'required|string',
             'notification' => 'integer|in:0,1'
         ]);
@@ -134,11 +134,11 @@ class PostController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"userId","post","category","title"},
+     *             required={"userId","post","category_id","title"},
      *             @OA\Property(property="userId", type="integer", example=1),
      *             @OA\Property(property="post", type="string", example="Updated content"),
      *             @OA\Property(property="tags", type="string", example="tag1,tag2", nullable=true),
-     *             @OA\Property(property="category", type="string", example="Technology"),
+     *             @OA\Property(property="category_id", type="integer", example=1),
      *             @OA\Property(property="title", type="string", example="Updated Title"),
      *             @OA\Property(property="notification", type="integer", example=0)
      *         )
@@ -166,7 +166,7 @@ class PostController extends Controller
             'userId' => 'required|integer',
             'post' => 'required|string',
             'tags' => 'nullable|string',
-            'category' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
             'title' => 'required|string',
             'notification' => 'integer|in:0,1'
         ]);

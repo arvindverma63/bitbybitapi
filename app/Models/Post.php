@@ -13,15 +13,24 @@ class Post extends Model
         'userId',
         'post',
         'tags',
-        'category',
+        'category_id',
         'title',
         'notification'
     ];
 
     protected $casts = [
         'userId' => 'integer',
+        'category_id' => 'integer',
         'notification' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    /**
+     * Get the category that owns the post.
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

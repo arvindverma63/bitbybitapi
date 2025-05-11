@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,8 +27,8 @@ Route::get('/profile', [AuthController::class, 'profile'])->middleware('auth:api
 // Password reset routes
 Route::post('/password/email', [AuthController::class, 'sendPasswordResetLink']);
 Route::post('/password/reset', [AuthController::class, 'resetPassword']);
-Route::post('/check-username',[AuthController::class,'checkUserName']);
-Route::post('/check-email',[AuthController::class,'checkEmail']);
+Route::post('/check-username', [AuthController::class, 'checkUserName']);
+Route::post('/check-email', [AuthController::class, 'checkEmail']);
 
 // Email verification routes
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
@@ -36,5 +38,6 @@ Route::post('/email/verification-notification', [AuthController::class, 'resendV
 
 Route::middleware(['auth:api'])->group(function () {
     Route::post('/update-profile', [ProfileController::class, 'updateProfile']);
+    Route::resource('categories', CategoryController::class);
     Route::resource('posts', PostController::class);
 });
