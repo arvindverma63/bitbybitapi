@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,4 +36,5 @@ Route::post('/email/verification-notification', [AuthController::class, 'resendV
 
 Route::middleware(['auth:api'])->group(function () {
     Route::post('/update-profile', [ProfileController::class, 'updateProfile']);
+    Route::resource('posts', PostController::class);
 });
