@@ -41,5 +41,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/update-profile', [ProfileController::class, 'updateProfile']);
     Route::resource('categories', CategoryController::class);
     Route::resource('posts', PostController::class);
-    Route::post('images',[PostImagesController::class,'saveImage']);
+    Route::post('/images',[PostImagesController::class,'saveImage']);
 });
