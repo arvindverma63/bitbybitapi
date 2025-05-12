@@ -12,14 +12,11 @@ use Illuminate\Http\UploadedFile;
 class PostImagesController extends Controller
 {
     /**
-     * Upload and save an image
-     *
      * @OA\Post(
      *     path="/images",
      *     tags={"Images"},
      *     summary="Upload a new image",
      *     description="Uploads an image file and associates it with the authenticated user",
-     *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
@@ -112,7 +109,7 @@ class PostImagesController extends Controller
                 // Create post image record
                 $postImage = PostImages::create([
                     'image' => $imageUrl,
-                    'user_id' => $userId,
+                    'userId' => $userId,
                 ]);
 
                 return response()->json([
