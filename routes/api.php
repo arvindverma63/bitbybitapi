@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostImagesController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -40,4 +41,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/update-profile', [ProfileController::class, 'updateProfile']);
     Route::resource('categories', CategoryController::class);
     Route::resource('posts', PostController::class);
+    Route::post('images',[PostImagesController::class,'saveImage']);
 });
