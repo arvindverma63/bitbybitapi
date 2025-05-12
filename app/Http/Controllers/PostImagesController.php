@@ -93,15 +93,11 @@ class PostImagesController extends Controller
     public function saveImage(Request $request)
     {
         try {
+            Log::info('Starting Upload Image for PostImage', ['userId' => Auth::id()]);
             // Validate the request
             $validated = $request->validate([
                 'image' => 'required|file|mimes:png,jpg,webp,gif|max:2048' // Max size 2MB
             ]);
-
-            // Check if user is authenticated
-            if (!Auth::check()) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
 
             $userId = Auth::id();
 
