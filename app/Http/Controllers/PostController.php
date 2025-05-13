@@ -90,7 +90,7 @@ class PostController extends Controller
 
         // Add the authenticated user ID to the validated data
         $data = $validator->validated();
-        $data['user_id'] = Auth::id();
+        $data['userId'] = Auth::id();
 
         // Create the post
         $post = Post::create($data);
