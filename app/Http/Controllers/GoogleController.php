@@ -122,7 +122,7 @@ class GoogleController extends Controller
             $token = JWTAuth::fromUser($user);
 
             // Define the redirect URL for your web app
-            $redirectUrl = 'http://your-webapp.com/dashboard';
+            $redirectUrl = 'https://testxyz-eight.vercel.app/profile';
 
             // Return JSON response with token and redirect URL
             return response()->json([
