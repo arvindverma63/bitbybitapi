@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostImagesController;
 use App\Http\Controllers\ProfileController;
@@ -24,7 +25,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/profile', [AuthController::class, 'profile'])->middleware('auth:api');
-
+Route::get('/login/google', [GoogleController::class, 'redirectToGoogle'])->name('api.login.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('api.google.callback');
 // Password reset routes
 Route::post('/password/email', [AuthController::class, 'sendPasswordResetLink']);
 Route::post('/password/reset', [AuthController::class, 'resetPassword']);
