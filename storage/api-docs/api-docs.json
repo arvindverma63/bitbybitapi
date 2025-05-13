@@ -593,12 +593,6 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "userId",
-                                    "post",
-                                    "category_id",
-                                    "title"
-                                ],
                                 "properties": {
                                     "userId": {
                                         "type": "integer",

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -53,7 +54,6 @@ class PostController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"userId","post","category_id","title"},
      *             @OA\Property(property="userId", type="integer", example=1),
      *             @OA\Property(property="post", type="string", example="Post content"),
      *             @OA\Property(property="tags", type="string", example="tag1,tag2", nullable=true),
@@ -75,8 +75,8 @@ class PostController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        // Validate the incoming request
         $validator = Validator::make($request->all(), [
-            'userId' => 'required|integer',
             'post' => 'required|string',
             'tags' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
@@ -84,13 +84,22 @@ class PostController extends Controller
             'notification' => 'integer|in:0,1'
         ]);
 
+        // Check for validation errors
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $post = Post::create($request->all());
-        return response()->json($post, 201);
+        // Add the authenticated user ID to the validated data
+        $data = $validator->validated();
+        $data['user_id'] = Auth::id();
+
+        // Create the post
+        $post = Post::create($data);
+
+        // Return the created post
+        return response()->json($post, 200);
     }
+
 
     /**
      * @OA\Get(
