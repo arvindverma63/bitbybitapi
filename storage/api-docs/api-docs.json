@@ -594,10 +594,6 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "userId": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
                                     "post": {
                                         "type": "string",
                                         "example": "Post content"

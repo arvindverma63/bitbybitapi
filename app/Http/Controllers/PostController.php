@@ -54,7 +54,6 @@ class PostController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="userId", type="integer", example=1),
      *             @OA\Property(property="post", type="string", example="Post content"),
      *             @OA\Property(property="tags", type="string", example="tag1,tag2", nullable=true),
      *             @OA\Property(property="category_id", type="integer", example=1),
