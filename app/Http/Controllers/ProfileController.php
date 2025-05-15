@@ -172,4 +172,156 @@ class ProfileController extends Controller
             return null;
         }
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/profile",
+     *     summary="Delete user profile",
+     *     description="Delete the authenticated user's profile and associated images",
+     *     operationId="deleteProfile",
+     *     tags={"Profile"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profile deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Profile deleted successfully.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Profile not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Profile not found.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="An error occurred while deleting the profile.")
+     *         )
+     *     )
+     * )
+     */
+    public function deleteProfile()
+    {
+        try {
+            $userId = Auth::id();
+            $profile = UserProfile::where('userId', $userId)->first();
+
+            if (!$profile) {
+                Log::info('Profile not found for deletion', ['userId' => $userId]);
+                return response()->json([
+                    'message' => 'Profile not found.'
+                ], 404);
+            }
+
+            if ($profile->avatar) {
+                $this->deleteImageFromImgBB($profile->avatar);
+            }
+            if ($profile->banners) {
+                $this->deleteImageFromImgBB($profile->banners);
+            }
+
+            $profile->delete();
+            Log::info('Profile deleted successfully', ['userId' => $userId]);
+
+            return response()->json([
+                'message' => 'Profile deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error deleting profile', [
+                'userId' => $userId,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'message' => 'An error occurred while deleting the profile.'
+            ], 500);
+        }
+    }
+    /**
+     * Get the authenticated user's profile
+     *
+     * @OA\Get(
+     *     path="/user-profile",
+     *     summary="Get user profile",
+     *     description="Retrieve the authenticated user's profile data",
+     *     operationId="getProfile",
+     *     tags={"Profile"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profile retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="profile", type="object",
+     *                 @OA\Property(property="userId", type="integer", example=1),
+     *                 @OA\Property(property="firstName", type="string", example="John", nullable=true),
+     *                 @OA\Property(property="lastName", type="string", example="Doe", nullable=true),
+     *                 @OA\Property(property="about", type="string", example="I am a software developer.", nullable=true),
+     *                 @OA\Property(property="lastseen", type="string", example="2025-05-08 12:34:56", nullable=true),
+     *                 @OA\Property(property="avatar", type="string", example="https://i.ibb.co/w04Prt6/c1f64245afb2.gif", nullable=true),
+     *                 @OA\Property(property="banners", type="string", example="https://i.ibb.co/98W13PY/c1f64245afb2.gif", nullable=true),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", nullable=true),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", nullable=true)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Profile not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Profile not found.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="An error occurred while retrieving the profile.")
+     *         )
+     *     )
+     * )
+     */
+    public function getProfile()
+    {
+        try {
+            $userId = Auth::id();
+            $profile = UserProfile::where('userId', $userId)->first();
+
+            if (!$profile) {
+                Log::info('Profile not found for user', ['userId' => $userId]);
+                return response()->json([
+                    'message' => 'Profile not found.'
+                ], 404);
+            }
+
+            Log::info('Profile retrieved successfully', ['userId' => $userId]);
+            return response()->json([
+                'profile' => $profile
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error retrieving profile', [
+                'userId' => $userId,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'message' => 'An error occurred while retrieving the profile.'
+            ], 500);
+        }
+    }
 }
