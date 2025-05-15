@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostImagesController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,6 +34,8 @@ Route::post('/password/email', [AuthController::class, 'sendPasswordResetLink'])
 Route::post('/password/reset', [AuthController::class, 'resetPassword']);
 Route::post('/check-username', [AuthController::class, 'checkUserName']);
 Route::post('/check-email', [AuthController::class, 'checkEmail']);
+Route::get('/login/facebook', [FacebookController::class, 'redirectToFacebook'])->name('api.login.facebook');
+Route::get('/auth/facebook/callback', [FacebookController::class, 'handleFacebookCallback'])->name('api.facebook.callback');
 
 // Email verification routes
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
