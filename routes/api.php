@@ -45,6 +45,8 @@ Route::post('/email/verification-notification', [AuthController::class, 'resendV
 
 Route::middleware(['auth:api'])->group(function () {
     Route::post('/profile', [ProfileController::class, 'updateProfile']);
+    Route::get('/user-profile',[ProfileController::class,'getProfile']);
+
     Route::resource('categories', CategoryController::class);
     Route::resource('posts', PostController::class);
     Route::post('/images', [PostImagesController::class, 'saveImage']);
