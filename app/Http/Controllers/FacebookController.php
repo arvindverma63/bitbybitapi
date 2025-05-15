@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
+use App\Models\UserProfile;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Exception;
 
@@ -30,6 +31,14 @@ class FacebookController extends Controller
                     'facebook_id' => $facebookUser->id,
                     'password' => bcrypt('dummy_password'), // Not needed for social login
                 ]);
+
+                if ($user) {
+                    $profile = UserProfile::create([
+                        'userId' => $user->id,
+                        'firstName' => $facebookUser->name,
+                        'image' => $facebookUser->getAvatar(),
+                    ]);
+                }
             } else {
                 $user->update(['facebook_id' => $facebookUser->id]);
             }

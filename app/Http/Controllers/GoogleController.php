@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -103,6 +104,13 @@ class GoogleController extends Controller
                     'google_id' => $googleUser->id,
                     'password' => bcrypt(uniqid()), // Random password
                 ]);
+                if ($user) {
+                    $profile = UserProfile::create([
+                        'userId' => $user->id,
+                        'firstName' => $googleUser->name,
+                        'image' => $googleUser->getAvatar(),
+                    ]);
+                }
             } else {
                 // Update google_id if user exists
                 $user->update(['google_id' => $googleUser->id]);
