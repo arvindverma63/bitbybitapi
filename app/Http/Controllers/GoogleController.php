@@ -94,31 +94,29 @@ class GoogleController extends Controller
         try {
             // Use stateless for API
             $googleUser = Socialite::driver('google')->stateless()->user();
-            $user = User::where('email', $googleUser->email)->first();
 
-            if (!$user) {
-                // Create a new user if not found
-                $user = User::create([
+            // Find or create the user
+            $user = User::firstOrCreate(
+                ['email' => $googleUser->email],
+                [
                     'name' => $googleUser->name,
-                    'email' => $googleUser->email,
                     'google_id' => $googleUser->id,
                     'password' => bcrypt(uniqid()), // Random password
-                ]);
-                if ($user) {
-                    $profile = UserProfile::create([
-                        'userId' => $user->id,
-                        'firstName' => $googleUser->name,
-                        'image' => $googleUser->getAvatar(),
-                    ]);
-                }
-            } else {
-                // Update google_id if user exists
+                ]
+            );
+
+            // Update or create the user profile
+            UserProfile::updateOrCreate(
+                ['userId' => $user->id], // Use 'userId' as the foreign key
+                [
+                    'firstName' => $googleUser->name,
+                    'image' => $googleUser->getAvatar(),
+                ]
+            );
+
+            // Update google_id if necessary
+            if (!$user->google_id) {
                 $user->update(['google_id' => $googleUser->id]);
-                $profileUpdate = UserProfile::updateOrCreate([
-                    'firstName'=>$googleUser->name,
-                    'userId'=>$user->id,
-                    'image'=>$googleUser->getAvatar()
-                ]);
             }
 
             // Log the user in
