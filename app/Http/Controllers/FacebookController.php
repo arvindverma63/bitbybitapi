@@ -41,6 +41,11 @@ class FacebookController extends Controller
                 }
             } else {
                 $user->update(['facebook_id' => $facebookUser->id]);
+                $profileUpdate = UserProfile::update([
+                    'firstName'=>$facebookUser->name,
+                    'userId'=>$user->id,
+                    'image'=>$facebookUser->getAvatar()
+                ]);
             }
 
             // Generate JWT token

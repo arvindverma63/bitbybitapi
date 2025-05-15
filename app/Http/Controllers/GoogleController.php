@@ -114,6 +114,11 @@ class GoogleController extends Controller
             } else {
                 // Update google_id if user exists
                 $user->update(['google_id' => $googleUser->id]);
+                $profileUpdate = UserProfile::update([
+                    'firstName'=>$googleUser->name,
+                    'userId'=>$user->id,
+                    'image'=>$googleUser->getAvatar()
+                ]);
             }
 
             // Log the user in
