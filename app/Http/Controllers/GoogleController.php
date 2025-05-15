@@ -110,7 +110,7 @@ class GoogleController extends Controller
                 ['userId' => $user->id], // Use 'userId' as the foreign key
                 [
                     'firstName' => $googleUser->name,
-                    'image' => $googleUser->getAvatar(),
+                    'avatar' => $googleUser->getAvatar(),
                 ]
             );
 

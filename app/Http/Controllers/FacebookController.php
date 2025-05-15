@@ -36,7 +36,7 @@ class FacebookController extends Controller
                 ['userId' => $user->id], // Using 'userId' as the foreign key
                 [
                     'firstName' => $facebookUser->name,
-                    'image' => $facebookUser->getAvatar(),
+                    'avatar' => $facebookUser->getAvatar(),
                 ]
             );
 
