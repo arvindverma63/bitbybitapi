@@ -22,31 +22,23 @@ class FacebookController extends Controller
             $facebookUser = Socialite::driver('facebook')->stateless()->user();
 
             // Find or create the user
-            $user = User::where('email', $facebookUser->email)->first();
-
-            if (!$user) {
-                $user = User::create([
+            $user = User::firstOrCreate(
+                ['email' => $facebookUser->email],
+                [
                     'name' => $facebookUser->name,
-                    'email' => $facebookUser->email,
                     'facebook_id' => $facebookUser->id,
-                    'password' => bcrypt('dummy_password'), // Not needed for social login
-                ]);
+                    'password' => bcrypt(uniqid()), // Random password for security
+                ]
+            );
 
-                if ($user) {
-                    $profile = UserProfile::create([
-                        'userId' => $user->id,
-                        'firstName' => $facebookUser->name,
-                        'image' => $facebookUser->getAvatar(),
-                    ]);
-                }
-            } else {
-                $user->update(['facebook_id' => $facebookUser->id]);
-                $profileUpdate = UserProfile::updateOrCreate([
-                    'firstName'=>$facebookUser->name,
-                    'userId'=>$user->id,
-                    'image'=>$facebookUser->getAvatar()
-                ]);
-            }
+            // Update or create the user profile
+            UserProfile::updateOrCreate(
+                ['userId' => $user->id], // Using 'userId' as the foreign key
+                [
+                    'firstName' => $facebookUser->name,
+                    'image' => $facebookUser->getAvatar(),
+                ]
+            );
 
             // Generate JWT token
             $token = JWTAuth::fromUser($user);
@@ -61,6 +53,7 @@ class FacebookController extends Controller
 
             return redirect($frontendCallback);
         } catch (Exception $e) {
+            // Redirect to frontend with error
             return redirect('https://testxyz-eight.vercel.app/login?error=' . urlencode($e->getMessage()));
         }
     }
