@@ -559,7 +559,7 @@
                 }
             }
         },
-        "/login/google": {
+        "/api/login/google": {
             "get": {
                 "tags": [
                     "Authentication"
@@ -598,13 +598,13 @@
                 }
             }
         },
-        "/auth/google/callback": {
+        "/api/auth/google/callback": {
             "get": {
                 "tags": [
                     "Authentication"
                 ],
-                "summary": "Handle Google OAuth callback and return JWT token",
-                "description": "Processes the Google OAuth callback, authenticates the user, generates a JWT token, and returns it for frontend use.",
+                "summary": "Handle Google OAuth callback and redirect to frontend",
+                "description": "Processes the Google OAuth callback, generates a JWT token, and redirects to the frontend with the token.",
                 "operationId": "handleGoogleCallback",
                 "parameters": [
                     {
@@ -627,43 +627,14 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Successful authentication with JWT token",
-                        "content": {
-                            "application/json": {
+                    "302": {
+                        "description": "Redirects to frontend with token and user details",
+                        "headers": {
+                            "Location": {
+                                "description": "Frontend callback URL with token",
                                 "schema": {
-                                    "properties": {
-                                        "access_token": {
-                                            "type": "string",
-                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
-                                        },
-                                        "token_type": {
-                                            "type": "string",
-                                            "example": "Bearer"
-                                        },
-                                        "user": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "John Doe"
-                                                },
-                                                "email": {
-                                                    "type": "string",
-                                                    "example": "john.doe@example.com"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "redirect_url": {
-                                            "type": "string",
-                                            "example": "http://your-webapp.com/dashboard"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "type": "string",
+                                    "example": "https://testxyz-eight.vercel.app/callback?access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...&name=John%20Doe&email=john.doe@example.com"
                                 }
                             }
                         }

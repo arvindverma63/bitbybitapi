@@ -14,7 +14,7 @@ class GoogleController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/login/google",
+     *     path="/api/login/google",
      *     tags={"Authentication"},
      *     summary="Redirect to Google for OAuth authentication",
      *     description="Redirects the user to Google's OAuth consent screen to initiate authentication.",
@@ -44,10 +44,10 @@ class GoogleController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/auth/google/callback",
+     *     path="/api/auth/google/callback",
      *     tags={"Authentication"},
-     *     summary="Handle Google OAuth callback and return JWT token",
-     *     description="Processes the Google OAuth callback, authenticates the user, generates a JWT token, and returns it for frontend use.",
+     *     summary="Handle Google OAuth callback and redirect to frontend",
+     *     description="Processes the Google OAuth callback, generates a JWT token, and redirects to the frontend with the token.",
      *     operationId="handleGoogleCallback",
      *     @OA\Parameter(
      *         name="code",
@@ -64,19 +64,12 @@ class GoogleController extends Controller
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Response(
-     *         response=200,
-     *         description="Successful authentication with JWT token",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="access_token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."),
-     *             @OA\Property(property="token_type", type="string", example="Bearer"),
-     *             @OA\Property(
-     *                 property="user",
-     *                 type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="name", type="string", example="John Doe"),
-     *                 @OA\Property(property="email", type="string", example="john.doe@example.com")
-     *             ),
-     *             @OA\Property(property="redirect_url", type="string", example="http://your-webapp.com/dashboard")
+     *         response=302,
+     *         description="Redirects to frontend with token and user details",
+     *         @OA\Header(
+     *             header="Location",
+     *             description="Frontend callback URL with token",
+     *             @OA\Schema(type="string", example="https://testxyz-eight.vercel.app/callback?access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...&name=John%20Doe&email=john.doe@example.com")
      *         )
      *     ),
      *     @OA\Response(
@@ -121,24 +114,19 @@ class GoogleController extends Controller
             // Generate JWT token
             $token = JWTAuth::fromUser($user);
 
-            // Define the redirect URL for your web app
-            $redirectUrl = 'https://testxyz-eight.vercel.app/profile';
+            // Define the frontend callback URL with token and user details
+            $frontendCallback = sprintf(
+                'https://testxyz-eight.vercel.app/callback?access_token=%s&name=%s&email=%s',
+                urlencode($token),
+                urlencode($user->name),
+                urlencode($user->email)
+            );
 
-            // Return JSON response with token and redirect URL
-            return response()->json([
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                ],
-                'redirect_url' => $redirectUrl,
-            ], 200);
+            // Redirect to frontend
+            return redirect($frontendCallback);
         } catch (Exception $e) {
-            return response()->json([
-                'error' => 'Something went wrong: ' . $e->getMessage(),
-            ], 500);
+            // Redirect to frontend with error
+            return redirect('https://testxyz-eight.vercel.app/login?error=' . urlencode('Authentication failed: ' . $e->getMessage()));
         }
     }
 }
