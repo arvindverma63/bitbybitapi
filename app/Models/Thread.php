@@ -13,7 +13,7 @@ class Thread extends Model
         'userId',
         'post',
         'tags',
-        'category_id',
+        'category as category_id',
         'title',
         'notification'
     ];
