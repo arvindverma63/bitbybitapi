@@ -28,23 +28,47 @@ class PostController extends Controller
     /**
      * @OA\Get(
      *     path="/posts",
-     *     summary="Get all posts",
+     *     summary="Get all posts with pagination",
      *     tags={"Posts"},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=false,
+     *         description="Page number",
+     *         @OA\Schema(type="integer", default=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         required=false,
+     *         description="Number of posts per page",
+     *         @OA\Schema(type="integer", default=10)
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(ref="#/components/schemas/Post")
+     *             type="object",
+     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Post")),
+     *             @OA\Property(property="current_page", type="integer"),
+     *             @OA\Property(property="last_page", type="integer"),
+     *             @OA\Property(property="per_page", type="integer"),
+     *             @OA\Property(property="total", type="integer"),
+     *             @OA\Property(property="next_page_url", type="string", nullable=true),
+     *             @OA\Property(property="prev_page_url", type="string", nullable=true)
      *         )
      *     )
      * )
      */
     public function index(): JsonResponse
     {
-        $posts = Post::all();
+        // Get the per_page parameter from the query or use a default of 10
+        $perPage = request()->query('per_page', 10);
+        $posts = Post::paginate($perPage);
+
         return response()->json($posts);
     }
+
 
     /**
      * @OA\Post(
