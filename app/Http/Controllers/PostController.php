@@ -28,20 +28,20 @@ class PostController extends Controller
     /**
      * @OA\Get(
      *     path="/posts",
-     *     summary="Get all posts with pagination",
+     *     summary="Get paginated posts",
      *     tags={"Posts"},
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
-     *         required=false,
      *         description="Page number",
+     *         required=false,
      *         @OA\Schema(type="integer", default=1)
      *     ),
      *     @OA\Parameter(
      *         name="per_page",
      *         in="query",
-     *         required=false,
      *         description="Number of posts per page",
+     *         required=false,
      *         @OA\Schema(type="integer", default=10)
      *     ),
      *     @OA\Response(
@@ -49,24 +49,31 @@ class PostController extends Controller
      *         description="Successful operation",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Post")),
-     *             @OA\Property(property="current_page", type="integer"),
-     *             @OA\Property(property="last_page", type="integer"),
-     *             @OA\Property(property="per_page", type="integer"),
-     *             @OA\Property(property="total", type="integer"),
-     *             @OA\Property(property="next_page_url", type="string", nullable=true),
-     *             @OA\Property(property="prev_page_url", type="string", nullable=true)
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/Post")
+     *             ),
+     *             @OA\Property(property="current_page", type="integer", example=1),
+     *             @OA\Property(property="last_page", type="integer", example=5),
+     *             @OA\Property(property="total", type="integer", example=50),
+     *             @OA\Property(property="per_page", type="integer", example=10)
      *         )
      *     )
      * )
      */
     public function index(): JsonResponse
     {
-        // Get the per_page parameter from the query or use a default of 10
         $perPage = request()->query('per_page', 10);
-        $posts = Post::paginate($perPage);
+        $postsPaginated = Post::paginate($perPage);
 
-        return response()->json($posts);
+        return response()->json([
+            'data' => $postsPaginated->items(),
+            'current_page' => $postsPaginated->currentPage(),
+            'last_page' => $postsPaginated->lastPage(),
+            'total' => $postsPaginated->total(),
+            'per_page' => $postsPaginated->perPage(),
+        ]);
     }
 
 

@@ -753,7 +753,7 @@
                 "tags": [
                     "Posts"
                 ],
-                "summary": "Get all posts with pagination",
+                "summary": "Get paginated posts",
                 "operationId": "5f292ed47bdbfa79356750be0807450c",
                 "parameters": [
                     {
@@ -791,24 +791,20 @@
                                             }
                                         },
                                         "current_page": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "example": 1
                                         },
                                         "last_page": {
-                                            "type": "integer"
-                                        },
-                                        "per_page": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "example": 5
                                         },
                                         "total": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "example": 50
                                         },
-                                        "next_page_url": {
-                                            "type": "string",
-                                            "nullable": true
-                                        },
-                                        "prev_page_url": {
-                                            "type": "string",
-                                            "nullable": true
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 10
                                         }
                                     },
                                     "type": "object"
