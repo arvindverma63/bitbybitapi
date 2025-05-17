@@ -1222,7 +1222,7 @@
             },
             "post": {
                 "tags": [
-                    "Posts"
+                    "Threads"
                 ],
                 "summary": "Create a new post",
                 "operationId": "81305be6d5c29e6ee5bc9e5d27a1c778",
@@ -1515,8 +1515,8 @@
             "description": "Thread"
         },
         {
-            "name": "Posts",
-            "description": "Posts"
+            "name": "Threads",
+            "description": "Threads"
         }
     ],
     "security": [
