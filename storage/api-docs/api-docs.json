@@ -748,265 +748,6 @@
                 }
             }
         },
-        "/posts": {
-            "get": {
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Get paginated posts",
-                "operationId": "5f292ed47bdbfa79356750be0807450c",
-                "parameters": [
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Page number",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 1
-                        }
-                    },
-                    {
-                        "name": "per_page",
-                        "in": "query",
-                        "description": "Number of posts per page",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 10
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Post"
-                                            }
-                                        },
-                                        "current_page": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "last_page": {
-                                            "type": "integer",
-                                            "example": 5
-                                        },
-                                        "total": {
-                                            "type": "integer",
-                                            "example": 50
-                                        },
-                                        "per_page": {
-                                            "type": "integer",
-                                            "example": 10
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Create a new post",
-                "operationId": "c2e0b0e26215e6d34ece33ebae25f7df",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "post": {
-                                        "type": "string",
-                                        "example": "Post content"
-                                    },
-                                    "tags": {
-                                        "type": "string",
-                                        "example": "tag1,tag2",
-                                        "nullable": true
-                                    },
-                                    "category_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "example": "Post Title"
-                                    },
-                                    "notification": {
-                                        "type": "integer",
-                                        "example": 0
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Post created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Post"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation error"
-                    }
-                }
-            }
-        },
-        "/posts/{id}": {
-            "get": {
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Get a specific post",
-                "operationId": "c8bd68bc05422c879bc2dd429ae5782b",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Post"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Post not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Update a post",
-                "operationId": "06c81121178208730e11d2f6b655e78d",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "userId",
-                                    "post",
-                                    "category_id",
-                                    "title"
-                                ],
-                                "properties": {
-                                    "userId": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "post": {
-                                        "type": "string",
-                                        "example": "Updated content"
-                                    },
-                                    "tags": {
-                                        "type": "string",
-                                        "example": "tag1,tag2",
-                                        "nullable": true
-                                    },
-                                    "category_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "example": "Updated Title"
-                                    },
-                                    "notification": {
-                                        "type": "integer",
-                                        "example": 0
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Post updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Post"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Post not found"
-                    },
-                    "422": {
-                        "description": "Validation error"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Posts"
-                ],
-                "summary": "Delete a post",
-                "operationId": "54788a50da690c5ee1dfdc25425a1f87",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Post deleted successfully"
-                    },
-                    "404": {
-                        "description": "Post not found"
-                    }
-                }
-            }
-        },
         "/images": {
             "post": {
                 "tags": [
@@ -1412,6 +1153,265 @@
                     }
                 }
             }
+        },
+        "/threads": {
+            "get": {
+                "tags": [
+                    "Thread"
+                ],
+                "summary": "Get paginated posts",
+                "operationId": "292ffe776e65aa1f7f9e87b2094f032b",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of posts per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Post"
+                                            }
+                                        },
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "last_page": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 50
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 10
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create a new post",
+                "operationId": "81305be6d5c29e6ee5bc9e5d27a1c778",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "post": {
+                                        "type": "string",
+                                        "example": "Post content"
+                                    },
+                                    "tags": {
+                                        "type": "string",
+                                        "example": "tag1,tag2",
+                                        "nullable": true
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Post Title"
+                                    },
+                                    "notification": {
+                                        "type": "integer",
+                                        "example": 0
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Post created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/threads/{id}": {
+            "get": {
+                "tags": [
+                    "Thread"
+                ],
+                "summary": "Get a specific post",
+                "operationId": "ce75bfdc8fba62dde9c3fb2e2562552b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Thread"
+                ],
+                "summary": "Update a post",
+                "operationId": "39ef90c45e9384fcd3abb292d2628ca5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "userId",
+                                    "post",
+                                    "category_id",
+                                    "title"
+                                ],
+                                "properties": {
+                                    "userId": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "post": {
+                                        "type": "string",
+                                        "example": "Updated content"
+                                    },
+                                    "tags": {
+                                        "type": "string",
+                                        "example": "tag1,tag2",
+                                        "nullable": true
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Updated Title"
+                                    },
+                                    "notification": {
+                                        "type": "integer",
+                                        "example": 0
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Post"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Thread"
+                ],
+                "summary": "Delete a post",
+                "operationId": "697aa482356c51a0337b85ada5cab0c6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Post deleted successfully"
+                    },
+                    "404": {
+                        "description": "Post not found"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1503,16 +1503,20 @@
             "description": "Categories"
         },
         {
-            "name": "Posts",
-            "description": "Posts"
-        },
-        {
             "name": "Images",
             "description": "Images"
         },
         {
             "name": "Profile",
             "description": "Profile"
+        },
+        {
+            "name": "Thread",
+            "description": "Thread"
+        },
+        {
+            "name": "Posts",
+            "description": "Posts"
         }
     ],
     "security": [

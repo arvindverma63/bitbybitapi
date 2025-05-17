@@ -4,9 +4,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\GoogleController;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostImagesController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ThreadController;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -48,6 +48,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/user-profile',[ProfileController::class,'getProfile']);
 
     Route::resource('categories', CategoryController::class);
-    Route::resource('posts', PostController::class);
+    Route::resource('threads', ThreadController::class);
     Route::post('/images', [PostImagesController::class, 'saveImage']);
 });

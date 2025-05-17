@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Thread;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -23,13 +24,13 @@ use Illuminate\Support\Facades\Validator;
  *     @OA\Property(property="updated_at", type="string", format="date-time")
  * )
  */
-class PostController extends Controller
+class ThreadController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/posts",
+     *     path="/threads",
      *     summary="Get paginated posts",
-     *     tags={"Posts"},
+     *     tags={"Thread"},
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
@@ -65,7 +66,7 @@ class PostController extends Controller
     public function index(): JsonResponse
     {
         $perPage = request()->query('per_page', 10);
-        $postsPaginated = Post::paginate($perPage);
+        $postsPaginated = Thread::paginate($perPage);
 
         return response()->json([
             'data' => $postsPaginated->items(),
@@ -79,7 +80,7 @@ class PostController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/posts",
+     *     path="/threads",
      *     summary="Create a new post",
      *     tags={"Posts"},
      *     @OA\RequestBody(
@@ -124,7 +125,7 @@ class PostController extends Controller
         $data['userId'] = Auth::id();
 
         // Create the post
-        $post = Post::create($data);
+        $post = Thread::create($data);
 
         // Return the created post
         return response()->json($post, 200);
@@ -133,9 +134,9 @@ class PostController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/posts/{id}",
+     *     path="/threads/{id}",
      *     summary="Get a specific post",
-     *     tags={"Posts"},
+     *     tags={"Thread"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -155,15 +156,15 @@ class PostController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $post = Post::findOrFail($id);
+        $post = Thread::findOrFail($id);
         return response()->json($post);
     }
 
     /**
      * @OA\Put(
-     *     path="/posts/{id}",
+     *     path="/threads/{id}",
      *     summary="Update a post",
-     *     tags={"Posts"},
+     *     tags={"Thread"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -199,7 +200,7 @@ class PostController extends Controller
      */
     public function update(Request $request, $id): JsonResponse
     {
-        $post = Post::findOrFail($id);
+        $post = Thread::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
             'userId' => 'required|integer',
@@ -220,9 +221,9 @@ class PostController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/posts/{id}",
+     *     path="/threads/{id}",
      *     summary="Delete a post",
-     *     tags={"Posts"},
+     *     tags={"Thread"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -241,7 +242,7 @@ class PostController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        $post = Post::findOrFail($id);
+        $post = Thread::findOrFail($id);
         $post->delete();
         return response()->json(null, 204);
     }
