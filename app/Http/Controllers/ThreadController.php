@@ -82,7 +82,7 @@ class ThreadController extends Controller
      * @OA\Post(
      *     path="/threads",
      *     summary="Create a new post",
-     *     tags={"Threads"},
+     *     tags={"Thread"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
