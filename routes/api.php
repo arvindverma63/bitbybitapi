@@ -4,7 +4,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostImagesController;
+use App\Http\Controllers\PostReactionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ThreadController;
 use App\Models\Category;
@@ -50,4 +52,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('threads', ThreadController::class);
     Route::post('/images', [PostImagesController::class, 'saveImage']);
+
+
+    Route::get('/threads/{thread_id}/posts', [PostController::class, 'index']);
+    Route::post('/threads/{thread_id}/posts', [PostController::class, 'store']);
+    Route::put('/posts/{post_id}', [PostController::class, 'update']);
+    Route::delete('/posts/{post_id}', [PostController::class, 'destroy']);
+    Route::post('/posts/{post_id}/reactions', [PostReactionController::class, 'store']);
+    Route::delete('/posts/{post_id}/reactions', [PostReactionController::class, 'destroy']);
 });
