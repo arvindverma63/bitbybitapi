@@ -13,14 +13,14 @@ class Thread extends Model
         'userId',
         'post',
         'tags',
-        'category as category_id',
+        'category',
         'title',
         'notification'
     ];
 
     protected $casts = [
         'userId' => 'integer',
-        'category_id' => 'integer',
+        'category' => 'integer',
         'notification' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

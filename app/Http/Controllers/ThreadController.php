@@ -110,7 +110,7 @@ class ThreadController extends Controller
         $validator = Validator::make($request->all(), [
             'post' => 'required|string',
             'tags' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
+            'category' => 'required|exists:categories,id',
             'title' => 'required|string',
             'notification' => 'integer|in:0,1'
         ]);
